@@ -1,0 +1,16 @@
+{
+    "name": "Mr.Sagasu",
+    "version": "0.1",
+    "description": "search bookmark in the adress bar",
+    "omnibox": {
+        "keyword": "b"
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "permissions": [
+        "bookmarks"
+    ],
+    "manifest_version": 2
+}
