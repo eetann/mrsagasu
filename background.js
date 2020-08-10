@@ -1,11 +1,15 @@
 chrome.omnibox.onInputChanged.addListener(
   function (text, suggest) {
-    chrome.bookmarks.search(text, function (bookmarkItems) {
+    var fuz = "";
+    for (var i = 0; i < text.length; i++) {
+      fuz += text.charAt(i) + ".*";
+    }
+    var re = new RegExp(fuz, "i");
+    chrome.bookmarks.search({}, function (bookmarkItems) {
       var sugs = [];
-      for (var i = 0, limit = bookmarkItems.length > 5 ? 5 : bookmarkItems.length;
-        i < limit; i++) {
+      for (var i = 0; i < bookmarkItems.length; i++) {
         var item = bookmarkItems[i];
-        if (item.url) {
+        if ((item.url) && (re.test(item.title))) {
           sugs.push({content: item.url, description: item.title});
         }
       }
