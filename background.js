@@ -13,6 +13,16 @@ function update_bookmarks() {
   })
 }
 
+function escapeXML(text) {
+  return text
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, "&apos;")
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/&/g, '&amp;');
+
+}
+
 chrome.runtime.onInstalled.addListener(update_bookmarks);
 chrome.bookmarks.onChanged.addListener(update_bookmarks);
 chrome.bookmarks.onRemoved.addListener(update_bookmarks);
@@ -31,11 +41,33 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
         fuz += text.charAt(i) + ".*?";
       }
       var re = new RegExp(fuz, "i");
-      var sugs = bookmarks.filter(value => re.test(value.description));
+      var sugs = [];
+      bookmarks.forEach(value => {
+        var mat = re.exec(value.description);
+        if (mat) {
+          var esd = escapeXML(value.description);
+          var esc = escapeXML(value.content);
+          var desc = "<dim>" + esd.slice(0, mat.index)
+            + "</dim><match>"
+            + esd.slice(mat.index, mat.index + mat[0].length)
+            + "</match><dim>"
+            + esd.slice(mat.index + mat[0].length)
+            + "</dim> <url>" + esc + "</url>";
+          sugs.push({
+            content: value.content,
+            description: desc,
+            mathchlen: mat[0].length
+          });
+        }
+      });
       sugs.sort((a, b) => {
-        return re.exec(a.description)[0].length - re.exec(b.description)[0].length;
+        return a.mathchlen - b.mathchlen;
       })
-      suggest(sugs.slice(0, 7));
+      var result = [];
+      for (var i = 0; i < sugs.length && i < 7; i++) {
+        result.push({content: sugs[i].content, description: sugs[i].description});
+      }
+      suggest(result);
     }
   });
 });
