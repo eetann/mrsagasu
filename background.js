@@ -2,7 +2,7 @@ chrome.omnibox.setDefaultSuggestion({
   description: "Please type a few words the title of the bookmark."
 });
 
-chrome.omnibox.onInputStarted.addListener(() => {
+function update_bookmarks() {
   chrome.bookmarks.search({}, (bookmarkItems) => {
     if (bookmarkItems) {
       var bookmarks = [];
@@ -15,7 +15,12 @@ chrome.omnibox.onInputStarted.addListener(() => {
       chrome.storage.local.set({"mrsagasu": bookmarks});
     }
   })
-});
+}
+
+chrome.runtime.onInstalled.addListener(update_bookmarks);
+chrome.bookmarks.onChanged.addListener(update_bookmarks);
+chrome.bookmarks.onRemoved.addListener(update_bookmarks);
+chrome.bookmarks.onCreated.addListener(update_bookmarks);
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
   var fuz = "";
@@ -39,7 +44,6 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
 });
 
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
-  chrome.storage.local.remove("mrsagasu");
   switch (disposition) {
     case "currentTab":
       chrome.tabs.update({url: text});
@@ -53,7 +57,3 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   }
 });
 
-
-chrome.omnibox.onInputCancelled.addListener(() => {
-  chrome.storage.local.remove("mrsagasu");
-});

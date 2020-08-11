@@ -1,6 +1,6 @@
 {
     "name": "Mr.Sagasu",
-    "version": "0.3",
+    "version": "0.4",
     "description": "search bookmark in the adress bar",
     "omnibox": {
         "keyword": "b"
