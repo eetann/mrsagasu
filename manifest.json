@@ -1,6 +1,6 @@
 {
     "name": "Mr.Sagasu",
-    "version": "0.6",
+    "version": "1.0",
     "description": "search bookmark in the adress bar",
     "omnibox": {
         "keyword": "b"
@@ -13,5 +13,11 @@
         "bookmarks",
         "storage"
     ],
+    "icons": {
+        "16": "mrsagasu_icon16.png",
+        "32": "mrsagasu_icon32.png",
+        "48": "mrsagasu_icon48.png",
+        "128": "mrsagasu_icon128.png"
+    },
     "manifest_version": 2
 }
