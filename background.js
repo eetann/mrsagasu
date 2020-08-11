@@ -25,20 +25,17 @@ chrome.bookmarks.onCreated.addListener(update_bookmarks);
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
   var fuz = "";
   for (var i = 0; i < text.length; i++) {
-    fuz += text.charAt(i) + ".*";
+    fuz += text.charAt(i) + ".*?";
   }
   var re = new RegExp(fuz, "i");
   chrome.storage.local.get("mrsagasu", (value) => {
     var bookmarks = value.mrsagasu;
     if (bookmarks) {
-      var sugs = [];
-      for (var i = 0; i < bookmarks.length && sugs.length < 7; i++) {
-        var item = bookmarks[i];
-        if (re.test(item.description)) {
-          sugs.push(item);
-        }
-      }
-      suggest(sugs);
+      var sugs = bookmarks.filter(value => re.test(value.description));
+      sugs.sort((a, b) => {
+        return re.exec(a.description)[0].length - re.exec(b.description)[0].length;
+      })
+      suggest(sugs.slice(0, 7));
     }
   });
 });
