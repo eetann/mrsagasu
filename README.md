@@ -14,13 +14,14 @@ This is a Chrome Extension to search bookmark in the address bar.
 For example,
 let's say titles of bookmarks are the following.
 
-- bookmark abc
-- bookmark def
-- bookmark ghi
+- bookmaaark abc
+- booookmaaaaark def
+- boooookmaark ghi
+- goooookmaark
 
-When you want to choice "bookmark ghi", All you have to do is type "bg".  
+When you want to choice "boooookmaark ghi", All you have to do is type "bg".  
 It's brought by fuzzy match like the following.  
-**b**ookmark **g**hi  
+**b**oooookmaark **g**hi  
 
 ## Usage
 
