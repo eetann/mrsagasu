@@ -1,5 +1,6 @@
 # Mr.Sagasu
 This is a Chrome Extension to search bookmark in the address bar.
+[Mr.Sagasu][https://chrome.google.com/webstore/detail/mrsagasu/kkendaacffjgfnjaolejgaopcoakacpb]
 <!-- ![Badge Status](https://ci-as-a-service) -->  
 <!-- OverviewOverviewOverview -->  
 
