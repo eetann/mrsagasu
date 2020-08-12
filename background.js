@@ -29,7 +29,7 @@ chrome.bookmarks.onRemoved.addListener(update_bookmarks);
 chrome.bookmarks.onCreated.addListener(update_bookmarks);
 
 chrome.omnibox.setDefaultSuggestion({
-  description: "Please type a few words the title of the bookmark."
+  description: "Type a few character"
 });
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
@@ -37,9 +37,10 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
     var bookmarks = value.mrsagasu;
     if (bookmarks) {
       var fuz = "";
-      for (var i = 0; i < text.length; i++) {
+      for (var i = 0; i < text.length - 1; i++) {
         fuz += text.charAt(i) + ".*?";
       }
+      fuz += text.charAt(text.length - 1);
       var re = new RegExp(fuz, "i");
       var sugs = [];
       bookmarks.forEach(value => {
