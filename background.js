@@ -1,3 +1,12 @@
+function escapeTitle(text) {
+  return text
+    .replace(/"/g, ' ')
+    .replace(/'/g, " ")
+    .replace(/</g, ' ')
+    .replace(/>/g, ' ')
+    .replace(/&/g, ' ');
+}
+
 function update_bookmarks() {
   chrome.bookmarks.search({}, (bookmarkItems) => {
     if (bookmarkItems) {
@@ -5,7 +14,7 @@ function update_bookmarks() {
       for (var i = 0; i < bookmarkItems.length; i++) {
         var item = bookmarkItems[i];
         if (item.url) {
-          bookmarks.push({content: item.url, description: item.title});
+          bookmarks.push({content: item.url, description: escapeTitle(item.title)});
         }
       }
       chrome.storage.local.set({"mrsagasu": bookmarks});
@@ -20,7 +29,11 @@ function escapeXML(text) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/&/g, '&amp;');
+}
 
+function escapeRegExp(string) {
+  // $&はマッチした部分文字列全体
+  return string.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&');
 }
 
 chrome.runtime.onInstalled.addListener(update_bookmarks);
@@ -38,15 +51,15 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
     if (bookmarks) {
       var fuz = "";
       for (var i = 0; i < text.length - 1; i++) {
-        fuz += text.charAt(i) + ".*?";
+        fuz += escapeRegExp(text.charAt(i)) + ".*?";
       }
-      fuz += text.charAt(text.length - 1);
+      fuz += escapeRegExp(text.charAt(text.length - 1));
       var re = new RegExp(fuz, "i");
       var sugs = [];
       bookmarks.forEach(value => {
         var mat = re.exec(value.description);
         if (mat) {
-          var esd = escapeXML(value.description);
+          var esd = value.description;
           var esc = escapeXML(value.content);
           var desc = "<dim>" + esd.slice(0, mat.index)
             + "</dim><match>"
