@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "lint": "eslint src && prettier --check src",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "zip": "echo 'use chrome-webstore-upload-cli in GitHub Actions'",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
