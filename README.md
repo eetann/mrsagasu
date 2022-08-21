@@ -1,8 +1,6 @@
 # Mr.Sagasu
 This is a Chrome Extension to search bookmark in the address bar.
-[Mr.Sagasu][https://chrome.google.com/webstore/detail/mrsagasu/kkendaacffjgfnjaolejgaopcoakacpb]
-<!-- ![Badge Status](https://ci-as-a-service) -->  
-<!-- OverviewOverviewOverview -->  
+[Mr.Sagasu](https://chrome.google.com/webstore/detail/mrsagasu/kkendaacffjgfnjaolejgaopcoakacpb)
 
 ## Features
 ***DEMO:***  
@@ -31,11 +29,6 @@ It's brought by fuzzy match like the following.
 3. type a few characters
 4. choice a suggest by using arrow keys and enter key
 
-<!-- ## Installation -->
-
 
 ## Author
 [@eetann092](https://twitter.com/eetann092)  
-
-<!-- ## License                           -->  
-<!-- [MIT](http://eetann.mit-license.org) -->  
