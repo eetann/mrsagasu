@@ -2,7 +2,6 @@
   "name": "mrsagasu",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "lint": "eslint src && prettier --check src",
     "test": "vitest",

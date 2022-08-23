@@ -47,7 +47,7 @@ function escapeXML(text: string) {
 
 function escapeRegExp(text: string) {
   // $&はマッチした部分文字列全体
-  return text.replace(/[.*+?^=!:${}()|[\]\/\\]/g, "\\$&");
+  return text.replace(/[.*+?^=!:${}()|[\]/\\]/g, "\\$&");
 }
 
 chrome.runtime.onInstalled.addListener(update_bookmarks);
