@@ -1,3 +1,5 @@
+import { escapeXML, escapeRegExp } from "../common/util";
+
 function escapeTitle(text: string) {
   return text
     .replace(/"/g, " ")
@@ -34,20 +36,6 @@ function update_bookmarks() {
       chrome.storage.local.set({ mrsagasu: bookmarks });
     }
   });
-}
-
-function escapeXML(text: string) {
-  return text
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/&/g, "&amp;");
-}
-
-function escapeRegExp(text: string) {
-  // $&はマッチした部分文字列全体
-  return text.replace(/[.*+?^=!:${}()|[\]/\\]/g, "\\$&");
 }
 
 chrome.runtime.onInstalled.addListener(update_bookmarks);
