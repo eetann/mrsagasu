@@ -8,7 +8,7 @@ export default defineManifest({
   omnibox: {
     keyword: "b",
   },
-  permissions: ["bookmarks"],
+  permissions: ["bookmarks", "storage"],
   background: { service_worker: "src/background/index.ts" },
   icons: {
     "16": "icons/icon-16x16.png",
