@@ -1,3 +1,10 @@
+[![test and lint](https://github.com/eetann/mrsagasu/actions/workflows/test.yaml/badge.svg)](https://github.com/eetann/mrsagasu/actions/workflows/test.yaml)
+[![Release](https://github.com/eetann/mrsagasu/actions/workflows/release.yaml/badge.svg)](https://github.com/eetann/mrsagasu/actions/workflows/release.yaml)
+
+<p align="center">
+  <img src="./public/icons/icon-128x128.png" height="120">
+</p>
+
 # Mr.Sagasu
 This is a Chrome Extension to search bookmark in the address bar.
 [Mr.Sagasu](https://chrome.google.com/webstore/detail/mrsagasu/kkendaacffjgfnjaolejgaopcoakacpb)
