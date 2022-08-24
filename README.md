@@ -1,8 +1,13 @@
+[![test and lint](https://github.com/eetann/mrsagasu/actions/workflows/test.yaml/badge.svg)](https://github.com/eetann/mrsagasu/actions/workflows/test.yaml)
+[![Release](https://github.com/eetann/mrsagasu/actions/workflows/release.yaml/badge.svg)](https://github.com/eetann/mrsagasu/actions/workflows/release.yaml)
+
+<p align="center">
+  <img src="./public/icons/icon-128x128.png" height="120">
+</p>
+
 # Mr.Sagasu
 This is a Chrome Extension to search bookmark in the address bar.
-[Mr.Sagasu][https://chrome.google.com/webstore/detail/mrsagasu/kkendaacffjgfnjaolejgaopcoakacpb]
-<!-- ![Badge Status](https://ci-as-a-service) -->  
-<!-- OverviewOverviewOverview -->  
+[Mr.Sagasu](https://chrome.google.com/webstore/detail/mrsagasu/kkendaacffjgfnjaolejgaopcoakacpb)
 
 ## Features
 ***DEMO:***  
@@ -31,11 +36,6 @@ It's brought by fuzzy match like the following.
 3. type a few characters
 4. choice a suggest by using arrow keys and enter key
 
-<!-- ## Installation -->
-
 
 ## Author
 [@eetann092](https://twitter.com/eetann092)  
-
-<!-- ## License                           -->  
-<!-- [MIT](http://eetann.mit-license.org) -->  
