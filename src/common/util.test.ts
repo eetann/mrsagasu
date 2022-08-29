@@ -1,12 +1,11 @@
-import { escapeRegExp, escapeXML } from "./util";
+import { convertDescriptionXML, escapeRegExp, escapeXML } from "./util";
 import { describe, expect, test } from "vitest";
 
-type TestCase = {
-  input: string;
-  expected: string;
-};
-
 describe("escape for XML", () => {
+  type TestCase = {
+    input: string;
+    expected: string;
+  };
   test.each<TestCase>([
     { input: "Kerry", expected: "Kerry" },
     { input: "Kerry's voice", expected: "Kerry&apos;s voice" },
@@ -19,6 +18,10 @@ describe("escape for XML", () => {
 });
 
 describe("escape for escapeRegExp", () => {
+  type TestCase = {
+    input: string;
+    expected: string;
+  };
   test.each<TestCase>([
     { input: "Kerry.", expected: "Kerry\\." },
     { input: "Kerry * V", expected: "Kerry \\* V" },
@@ -36,5 +39,22 @@ describe("escape for escapeRegExp", () => {
     { input: "Kerry (* v *)/", expected: "Kerry \\(\\* v \\*\\)\\/" },
   ])("%s", ({ input, expected }) => {
     expect(escapeRegExp(input)).toBe(expected);
+  });
+});
+
+describe("convert to XML for omnibox description", () => {
+  type TestCase = {
+    title: string;
+    url: string;
+    expected: string;
+  };
+  test.each<TestCase>([
+    {
+      title: "aaaaaa",
+      url: "http://example.com/",
+      expected: "<dim>aaaaaa</dim><url>http://example.com/</url>",
+    },
+  ])("%s", ({ title, url, expected }) => {
+    expect(convertDescriptionXML(title, url)).toBe(expected);
   });
 });
