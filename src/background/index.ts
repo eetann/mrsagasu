@@ -13,34 +13,37 @@ chrome.omnibox.onInputStarted.addListener(() => {
     {},
     (bookmarkItems: chrome.bookmarks.BookmarkTreeNode[]) => {
       allBookmarks = bookmarkItems.filter((item) => "url" in item);
-      fuse = new Fuse(allBookmarks, { keys: ["title"] });
+      fuse = new Fuse(allBookmarks, {
+        keys: ["title"],
+        includeMatches: true,
+        threshold: 0.4,
+      });
     }
   );
 });
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
   const fuseResult = fuse.search(text);
-  let suggestResults: chrome.omnibox.SuggestResult[] = fuseResult.map(
-    (fuseBookmark) => {
-      let suggestResult: chrome.omnibox.SuggestResult = {
-        content: "",
-        description: "",
-      };
-      suggestResult.content = fuseBookmark.item.url || "";
-      // TODO: indicesの最初と最後を使って太字にする
-      suggestResult.description = convertDescriptionXML(
-        fuseBookmark.item.title,
-        fuseBookmark.item.url || ""
-      );
-      return suggestResult;
+  const suggestResults: chrome.omnibox.SuggestResult[] = [];
+  for (const fuseBookmark of fuseResult) {
+    const suggestResult: chrome.omnibox.SuggestResult = {
+      content: "",
+      description: "",
+    };
+    suggestResult.content = fuseBookmark.item.url || "";
+    const matches = fuseBookmark.matches;
+    if (typeof matches === "undefined") {
+      continue;
     }
-  );
-  // for (let i = 0; i < suggestions.length && i < 7; i++) {
-  //   result.push({
-  //     content: suggestions[i].content,
-  //     description: suggestions[i].description,
-  //   });
-  // }
+    // TODO: indicesの最初と最後を使って太字にする
+    const indices: ReadonlyArray<Fuse.RangeTuple> = matches[0].indices;
+    suggestResult.description = convertDescriptionXML(
+      fuseBookmark.item.title,
+      fuseBookmark.item.url || "",
+      indices
+    );
+    suggestResults.push(suggestResult);
+  }
   suggest(suggestResults);
 });
 
