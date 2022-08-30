@@ -1,5 +1,4 @@
 import { convertDescriptionXML, escapeRegExp, escapeXML } from "./util";
-import Fuse from "fuse.js";
 import { describe, expect, test } from "vitest";
 
 describe("escape for XML", () => {
@@ -47,25 +46,30 @@ describe("convert to XML for omnibox description", () => {
   type TestCase = {
     title: string;
     url: string;
-    indices: ReadonlyArray<Fuse.RangeTuple>;
+    startIndex: number;
+    lastIndex: number;
     expected: string;
   };
   test.each<TestCase>([
     {
       title: "example",
       url: "http://example.com/",
-      indices: [[2, 4]],
+      startIndex: 2,
+      lastIndex: 4,
       expected:
         "<dim>ex</dim><match>amp</match><dim>le</dim><url>http://example.com/</url>",
     },
     {
       title: "example",
       url: "http://example.com/",
-      indices: [[0, 1]],
+      startIndex: 2,
+      lastIndex: 6,
       expected:
-        "<match>ex</match><dim>ample</dim><url>http://example.com/</url>",
+        "<dim>ex</dim><match>ample</match><dim></dim><url>http://example.com/</url>",
     },
-  ])("%s", ({ title, url, indices, expected }) => {
-    expect(convertDescriptionXML(title, url, indices)).toBe(expected);
+  ])("%s", ({ title, url, startIndex, lastIndex, expected }) => {
+    expect(convertDescriptionXML(title, url, startIndex, lastIndex)).toBe(
+      expected
+    );
   });
 });

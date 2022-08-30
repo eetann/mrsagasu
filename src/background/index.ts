@@ -1,8 +1,11 @@
-import { convertDescriptionXML } from "../common/util";
-import Fuse from "fuse.js";
+import { convertDescriptionXML, escapeRegExp } from "../common/util";
 
 let allBookmarks: chrome.bookmarks.BookmarkTreeNode[] = [];
-let fuse: Fuse<chrome.bookmarks.BookmarkTreeNode>;
+
+type MatchLengthList = {
+  index: number;
+  matchLength: number;
+};
 
 chrome.omnibox.setDefaultSuggestion({
   description: "Type a few character",
@@ -13,37 +16,47 @@ chrome.omnibox.onInputStarted.addListener(() => {
     {},
     (bookmarkItems: chrome.bookmarks.BookmarkTreeNode[]) => {
       allBookmarks = bookmarkItems.filter((item) => "url" in item);
-      fuse = new Fuse(allBookmarks, {
-        keys: ["title"],
-        includeMatches: true,
-        threshold: 0.4,
-      });
     }
   );
 });
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
-  const fuseResult = fuse.search(text);
-  const suggestResults: chrome.omnibox.SuggestResult[] = [];
-  for (const fuseBookmark of fuseResult) {
-    const suggestResult: chrome.omnibox.SuggestResult = {
-      content: "",
-      description: "",
-    };
-    suggestResult.content = fuseBookmark.item.url || "";
-    const matches = fuseBookmark.matches;
-    if (typeof matches === "undefined") {
+  let suggestResults: chrome.omnibox.SuggestResult[] = [];
+  if (allBookmarks.length === 0) {
+    suggest(suggestResults);
+  }
+  const matchLengthList: MatchLengthList[] = [];
+  let searchText = "";
+  for (const char of text) {
+    searchText += escapeRegExp(char) + ".*?";
+  }
+  // delete last regexp .*?
+  searchText = searchText.substring(0, text.length - 3);
+  const re = new RegExp(searchText, "i");
+  for (let index = 0, len = allBookmarks.length; index < len; index++) {
+    const bookmark = allBookmarks[index];
+    const match = re.exec(bookmark.title);
+    if (match == null) {
       continue;
     }
-    // TODO: indicesの最初と最後を使って太字にする
-    const indices: ReadonlyArray<Fuse.RangeTuple> = matches[0].indices;
-    suggestResult.description = convertDescriptionXML(
-      fuseBookmark.item.title,
-      fuseBookmark.item.url || "",
-      indices
+    const content: string = bookmark.url || "";
+    const matchLength: number = match[0].length;
+    const description: string = convertDescriptionXML(
+      bookmark.title,
+      content,
+      match.index,
+      matchLength
     );
-    suggestResults.push(suggestResult);
+    suggestResults.push({ content, description });
+    matchLengthList.push({ index, matchLength });
   }
+  // sort
+  matchLengthList.sort((a, b) => {
+    return a.matchLength - b.matchLength;
+  });
+  suggestResults = matchLengthList.map((matchLengthItem) => {
+    return suggestResults[matchLengthItem.index];
+  });
   suggest(suggestResults);
 });
 
