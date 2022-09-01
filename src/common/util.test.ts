@@ -54,18 +54,18 @@ describe("convert to XML for omnibox description", () => {
     {
       title: "example",
       url: "http://example.com/",
-      startIndex: 2,
+      startIndex: 1,
       lastIndex: 4,
       expected:
-        "<dim>ex</dim><match>amp</match><dim>le</dim><url>http://example.com/</url>",
+        "<dim>e</dim><match>xamp</match><dim>le</dim><url>http://example.com/</url>",
     },
     {
       title: "example",
       url: "http://example.com/",
-      startIndex: 2,
+      startIndex: 3,
       lastIndex: 6,
       expected:
-        "<dim>ex</dim><match>ample</match><dim></dim><url>http://example.com/</url>",
+        "<dim>exa</dim><match>mple</match><dim></dim><url>http://example.com/</url>",
     },
   ])("%s", ({ title, url, startIndex, lastIndex, expected }) => {
     expect(convertDescriptionXML(title, url, startIndex, lastIndex)).toBe(
