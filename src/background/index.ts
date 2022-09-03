@@ -1,98 +1,28 @@
-import { escapeXML, escapeRegExp } from "../common/util";
+import { searchBookmarksFromRegExp } from "../common/util";
 
-function escapeTitle(text: string) {
-  return text
-    .replace(/"/g, " ")
-    .replace(/'/g, " ")
-    .replace(/</g, " ")
-    .replace(/>/g, " ")
-    .replace(/&/g, " ");
-}
+let allBookmarks: chrome.bookmarks.BookmarkTreeNode[] = [];
 
-type myBookmark = {
-  content: string;
-  description: string;
-};
-
-type mySug = {
-  content: string;
-  description: string;
-  mathchlen: number;
-};
-
-function update_bookmarks() {
-  chrome.bookmarks.search({}, (bookmarkItems) => {
-    if (bookmarkItems) {
-      const bookmarks: myBookmark[] = [];
-      for (let i = 0; i < bookmarkItems.length; i++) {
-        const item = bookmarkItems[i];
-        if (item.url) {
-          bookmarks.push({
-            content: item.url,
-            description: escapeTitle(item.title),
-          });
-        }
-      }
-      chrome.storage.local.set({ mrsagasu: bookmarks });
-    }
+chrome.omnibox.onInputStarted.addListener(() => {
+  chrome.omnibox.setDefaultSuggestion({
+    description: "Enter at least 2 characters ...",
   });
-}
-
-chrome.runtime.onInstalled.addListener(update_bookmarks);
-chrome.bookmarks.onChanged.addListener(update_bookmarks);
-chrome.bookmarks.onRemoved.addListener(update_bookmarks);
-chrome.bookmarks.onCreated.addListener(update_bookmarks);
-
-chrome.omnibox.setDefaultSuggestion({
-  description: "Type a few character",
+  chrome.bookmarks.search(
+    {},
+    (bookmarkItems: chrome.bookmarks.BookmarkTreeNode[]) => {
+      allBookmarks = bookmarkItems.filter((item) => "url" in item);
+    }
+  );
 });
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
-  chrome.storage.local.get("mrsagasu", (value) => {
-    const bookmarks: myBookmark[] = value.mrsagasu;
-    if (bookmarks) {
-      let fuz = "";
-      for (let i = 0; i < text.length - 1; i++) {
-        fuz += escapeRegExp(text.charAt(i)) + ".*?";
-      }
-      fuz += escapeRegExp(text.charAt(text.length - 1));
-      const re = new RegExp(fuz, "i");
-      const sugs: mySug[] = [];
-      bookmarks.forEach((value) => {
-        const mat = re.exec(value.description);
-        if (mat) {
-          const esd = value.description;
-          const esc = escapeXML(value.content);
-          const desc =
-            "<dim>" +
-            esd.slice(0, mat.index) +
-            "</dim><match>" +
-            esd.slice(mat.index, mat.index + mat[0].length) +
-            "</match><dim>" +
-            esd.slice(mat.index + mat[0].length) +
-            "</dim> <url>" +
-            esc +
-            "</url>";
-          sugs.push({
-            content: value.content,
-            description: desc,
-            mathchlen: mat[0].length,
-          });
-        }
-      });
-      sugs.sort((a, b) => {
-        return a.mathchlen - b.mathchlen;
-      });
-      const result = [];
-      for (let i = 0; i < sugs.length && i < 7; i++) {
-        result.push({
-          content: sugs[i].content,
-          description: sugs[i].description,
-        });
-      }
-      suggest(result);
-    }
+  if (allBookmarks.length === 0 || text.length < 2) {
+    suggest([]);
+    return;
+  }
+  chrome.omnibox.setDefaultSuggestion({
+    description: "Select ...",
   });
+  suggest(searchBookmarksFromRegExp(text, allBookmarks));
 });
 
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
