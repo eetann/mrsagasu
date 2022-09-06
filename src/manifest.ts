@@ -8,12 +8,22 @@ export default defineManifest({
   omnibox: {
     keyword: "b",
   },
-  permissions: ["bookmarks"],
+  permissions: ["bookmarks", "tabs"],
   background: { service_worker: "src/background/index.ts" },
+  action: {
+    default_popup: "index.html",
+  },
   icons: {
     "16": "icons/icon-16x16.png",
     "32": "icons/icon-32x32.png",
     "48": "icons/icon-48x48.png",
     "128": "icons/icon-128x128.png",
+  },
+  commands: {
+    _execute_action: {
+      suggested_key: {
+        default: "Ctrl+Shift+Y",
+      },
+    },
   },
 });
