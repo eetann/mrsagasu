@@ -12,24 +12,21 @@ const App = (): JSX.Element => {
     });
   }, []);
 
-  const onSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      const regexp = new RegExp(`#${query.current?.value}(\\s|$)`);
-      const bookmarks = allBookmarks.filter((item) => regexp.test(item.title));
-      for (const bookmark of bookmarks) {
-        chrome.tabs.create({ url: bookmark.url });
-      }
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    const regexp = new RegExp(`#${query.current?.value}(\\s|$)`);
+    const bookmarks = allBookmarks.filter((item) => regexp.test(item.title));
+    for (const bookmark of bookmarks) {
+      chrome.tabs.create({ url: bookmark.url });
     }
   };
 
   return (
     <div className="card w-96 bg-base-100 shadow-xl">
       <div className="card-body">
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Bookmark Nickname?</span>
-          </label>
-          <label className="input-group input-group-md">
+        <h2 className="card-title">Bookmark Nickname</h2>
+        <form className="form-control" onSubmit={onSubmit}>
+          <div className="input-group input-group-md">
             <span className="px-2 text-xl">#</span>
             <input
               placeholder="Type here"
@@ -37,15 +34,12 @@ const App = (): JSX.Element => {
               autoFocus={true}
               type="text"
               ref={query}
-              onKeyPress={onSubmit}
             />
-          </label>
-        </div>
-        <div className="card-actions justify-end">
-          <button className="btn btn-ghost" onClick={onSubmit}>
-            <kbd className="kbd kbd-sm">Enter</kbd>
-          </button>
-        </div>
+            <button className="btn btn-ghost">
+              <kbd className="kbd kbd-sm">Enter</kbd>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
