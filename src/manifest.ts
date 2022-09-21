@@ -8,7 +8,7 @@ export default defineManifest({
   omnibox: {
     keyword: "b",
   },
-  permissions: ["bookmarks", "tabs"],
+  permissions: ["bookmarks"],
   background: { service_worker: "src/background/index.ts" },
   action: {
     default_popup: "index.html",
