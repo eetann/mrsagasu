@@ -3,7 +3,7 @@ import { defineManifest } from "@crxjs/vite-plugin";
 export default defineManifest({
   manifest_version: 3,
   name: "Mr.Sagasu",
-  description: "search bookmark in the address bar",
+  description: "Bookmark Nickname & Search bookmark in the address bar",
   version: "1.0.1",
   omnibox: {
     keyword: "b",
